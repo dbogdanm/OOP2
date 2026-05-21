@@ -13,52 +13,60 @@ public class BibliotecaService
     private Set<Autor> autori = new HashSet<>();
     
     private List<Imprumut> imprumuturi = new ArrayList<>();
+    
+    private AuditService auditService = AuditService.getInstance();
 
     public void adaugaCarte(Carte carte)
     {
         carti.add(carte);
-        System.out.println("S-a adăugat cartea: " + carte.getTitlu());
+        auditService.logAction("adaugaCarte");
+        System.out.println("S-a adaugat cartea: " + carte.getTitlu());
     }
 
     public void adaugaAutor(Autor autor)
     {
         autori.add(autor);
-        System.out.println("S-a adăugat autorul: " + autor.getNume() + " " + autor.getPrenume());
+        auditService.logAction("adaugaAutor");
+        System.out.println("S-a adaugat autorul: " + autor.getNume() + " " + autor.getPrenume());
     }
 
     public void adaugaCititor(Cititor cititor)
     {
         cititori.add(cititor);
-        System.out.println("S-a adăugat cititorul: " + cititor.getNume() + " " + cititor.getPrenume());
+        auditService.logAction("adaugaCititor");
+        System.out.println("S-a adaugat cititorul: " + cititor.getNume() + " " + cititor.getPrenume());
     }
 
     public void creeazaImprumut(String idImprumut, Cititor cititor, Carte carte)
     {
         Imprumut imprumut = new Imprumut(idImprumut, cititor, carte, LocalDate.now());
         imprumuturi.add(imprumut);
-        System.out.println("Împrumut creat: " + cititor.getNume() + " a împrumutat cartea '" + carte.getTitlu() + "'");
+        auditService.logAction("creeazaImprumut");
+        System.out.println("Imprumut creat: " + cititor.getNume() + " a imprumutat cartea '" + carte.getTitlu() + "'");
     }
 
     public void returneazaCarte(String idImprumut)
     {
+        auditService.logAction("returneazaCarte");
         for (Imprumut i : imprumuturi)
         {
             if (i.getIdImprumut().equals(idImprumut) && i.isActiv())
             {
                 i.returneaza(LocalDate.now());
-                System.out.println("Cartea aferentă împrumutului [" + idImprumut + "] a fost returnată cu succes.");
+                System.out.println("Cartea aferenta imprumutului [" + idImprumut + "] a fost returnata cu succes.");
                 return;
             }
         }
-        System.out.println("Eroare: Împrumutul [" + idImprumut + "] nu a fost găsit sau a fost deja returnat.");
+        System.out.println("Eroare: Imprumutul [" + idImprumut + "] nu a fost gasit sau a fost deja returnat.");
     }
 
     public void afiseazaCarti()
     {
-        System.out.println("\n--- Lista Cărților (Sortate Alfabetic) ---");
+        auditService.logAction("afiseazaCarti");
+        System.out.println("\n--- Lista Cartilor (Sortate Alfabetic) ---");
         if (carti.isEmpty())
         {
-            System.out.println("Nu există cărți în bibliotecă.");
+            System.out.println("Nu exista carti in biblioteca.");
         }
         else
         {
@@ -71,6 +79,7 @@ public class BibliotecaService
 
     public void afiseazaCititori()
     {
+        auditService.logAction("afiseazaCititori");
         System.out.println("\n--- Lista Cititorilor ---");
         for (Cititor c : cititori)
         {
@@ -80,7 +89,8 @@ public class BibliotecaService
 
     public void cautaCarteDupaTitlu(String titlu)
     {
-        System.out.println("\n--- Rezultate căutare pentru titlul: '" + titlu + "' ---");
+        auditService.logAction("cautaCarteDupaTitlu");
+        System.out.println("\n--- Rezultate cautare pentru titlul: '" + titlu + "' ---");
         boolean gasit = false;
         for (Carte c : carti)
         {
@@ -92,13 +102,14 @@ public class BibliotecaService
         }
         if (!gasit)
         {
-            System.out.println("Nu a fost găsită nicio carte care să conțină acest titlu.");
+            System.out.println("Nu a fost gasita nicio carte care sa contina acest titlu.");
         }
     }
 
     public void afiseazaImprumuturiActive()
     {
-        System.out.println("\n--- Împrumuturi Active ---");
+        auditService.logAction("afiseazaImprumuturiActive");
+        System.out.println("\n--- Imprumuturi Active ---");
         boolean exista = false;
         for (Imprumut i : imprumuturi)
         {
@@ -110,13 +121,14 @@ public class BibliotecaService
         }
         if (!exista)
         {
-            System.out.println("Nu există împrumuturi active în acest moment.");
+            System.out.println("Nu exista imprumuturi active in acest moment.");
         }
     }
 
     public void afiseazaIstoricCititor(Cititor cititor)
     {
-        System.out.println("\n--- Istoric Împrumuturi pentru " + cititor.getNume() + " " + cititor.getPrenume() + " ---");
+        auditService.logAction("afiseazaIstoricCititor");
+        System.out.println("\n--- Istoric Imprumuturi pentru " + cititor.getNume() + " " + cititor.getPrenume() + " ---");
         boolean gasit = false;
         for (Imprumut i : imprumuturi)
         {
@@ -128,7 +140,7 @@ public class BibliotecaService
         }
         if (!gasit)
         {
-            System.out.println("Acest cititor nu are istoric de împrumuturi.");
+            System.out.println("Acest cititor nu are istoric de imprumuturi.");
         }
     }
 }
