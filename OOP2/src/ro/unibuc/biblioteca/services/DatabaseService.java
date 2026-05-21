@@ -8,9 +8,9 @@ public class DatabaseService {
     private static DatabaseService instance;
     private Connection connection;
 
-    private static final String URL = "jdbc:mariadb://100.88.113.106:3306/biblioteca";
-    private static final String USER = "bogdan";
-    private static final String PASSWORD = "2564";
+    private static final String URL = System.getProperty("db.url", "jdbc:mariadb://localhost:3306/biblioteca");
+    private static final String USER = System.getProperty("db.user", "root");
+    private static final String PASSWORD = System.getProperty("db.password", "");
 
     private DatabaseService() {}
 
